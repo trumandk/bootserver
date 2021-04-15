@@ -1,0 +1,5 @@
+version: '3.3'
+services:
+  slax:
+    build: .
+    network_mode: host
