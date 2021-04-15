@@ -1,11 +1,9 @@
-FROM golang:alpine AS builder
+FROM golang:1.15.10-alpine3.12 AS builder
 
 RUN apk update
 RUN apk add --no-cache git
 WORKDIR /app/
-
 RUN go get github.com/pin/tftp
-
 COPY main.go main.go
 RUN CGO_ENABLED=0 go build -o /main
 
