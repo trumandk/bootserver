@@ -4,14 +4,16 @@ RUN apk update
 RUN apk add --no-cache git
 WORKDIR /app/
 RUN go get github.com/pin/tftp
+RUN go get github.com/krolaw/dhcp4
 COPY main.go main.go
+COPY dhcpserver.go dhcpserver.go
 RUN CGO_ENABLED=0 go build -o /main
 
 FROM alpine AS tftp 
 RUN apk add --no-cache wget
 RUN apk add --no-cache syslinux
 
-FROM scratch
+FROM alpine
 WORKDIR /files/
 COPY initrfs.img .
 COPY vmlinuz .

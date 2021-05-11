@@ -69,6 +69,9 @@ func main() {
 	go func() {
 		http.ListenAndServe(":7529", nil)
 	}()
+	go func() {
+		StartDhcpServer()
+	}()
 
 	// use nil in place of handler to disable read or write operations
 	s := tftp.NewServer(readHandler, nil)
