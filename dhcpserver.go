@@ -117,12 +117,12 @@ func (s *DHCPServer) freeLease() int {
 	}
 	return -1
 }
-
+//192.16.200
 func StartDhcpServer() {
 	server := &DHCPServer{
-		ip:            net.IP{172, 30, 0, 1},
+		ip:            net.IP{192, 16, 200, 2},
 		leaseDuration: 2 * time.Hour,
-		start:         net.IP{172, 30, 0, 2},
+		start:         net.IP{192, 16, 200, 3},
 		leaseRange:    50,
 		leases:        make(map[int]lease, 10),
 	}
@@ -133,7 +133,7 @@ func StartDhcpServer() {
 		dhcp.OptionBootFileName: []byte("lpxelinux.0"), // Presuming Server is also your DNS server
 	}
 	fmt.Printf("StartDhcpServer\n")
-	interfaceS, err := NewUDP4BoundListener("enx24f5a2f21f4b",":67")
+	interfaceS, err := NewUDP4BoundListener("enp2s0",":67")
 	        if err != nil {
                 fmt.Fprintf(os.Stderr, "%v\n", err)
                 return 
