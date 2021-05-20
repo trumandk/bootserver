@@ -20,7 +20,7 @@ func defaultFile(ip string) *bytes.Buffer {
 
 	response += "LABEL slax-http\r\n"
 	response += "LINUX http://" + ip + "/vmlinuz\r\n"
-	response += "APPEND initrd=http://" + ip + "/initrfs.img console=tty1 LM=3 FASTBOOT_URL=http://" + ip + "\r\n"
+	response += "APPEND initrd=http://" + ip + "/initrfs.img splash=silent,theme:default console=tty1 LM=3 FASTBOOT_URL=http://" + ip + "\r\n"
 	buf := bytes.NewBufferString(response)
 	return buf
 }

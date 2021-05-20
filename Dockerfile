@@ -21,8 +21,8 @@ FROM alpine
 WORKDIR /files/
 COPY initrfs.img .
 COPY vmlinuz .
-COPY slax .
-COPY PXEFILELIST .
+#COPY slax .
+#COPY PXEFILELIST .
 COPY --from=squash lib.squash lib.squash
 WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
