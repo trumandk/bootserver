@@ -13,12 +13,17 @@ FROM alpine AS tftp
 RUN apk add --no-cache wget
 RUN apk add --no-cache syslinux
 
+FROM alpine AS squash
+COPY squash .
+RUN cat lib.squash_* > lib.squash
+
 FROM alpine
 WORKDIR /files/
 COPY initrfs.img .
 COPY vmlinuz .
 COPY slax .
 COPY PXEFILELIST .
+COPY --from=squash lib.squash lib.squash
 WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
 COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
