@@ -119,21 +119,41 @@ func (s *DHCPServer) freeLease() int {
 }
 //192.16.200
 func StartDhcpServer() {
+
+	if os.Getenv("DHCPSERVER_ENABLED") == "true" {
+
+		interfaceIP := net.ParseIP(os.Getenv("DHCPSERVER_IP")).To4()
+		dhcpserverRangeIP := net.ParseIP(os.Getenv("DHCPSERVER_RANGESTART")).To4()
+		dhcpserverGatewayIP := net.ParseIP(os.Getenv("DHCPSERVER_GATEWAY")).To4()
+		dhcpserverDnsIP := net.ParseIP(os.Getenv("DHCPSERVER_DNS")).To4()
+		interfaceNic := os.Getenv("DHCPSERVER_INTERFACE")
+		if interfaceIP == nil {
+	                fmt.Fprintf(os.Stderr, "DHCPSERVER_IP missing or wrong\n")
+	                return 
+		}else{
+			fmt.Printf("DHCPSERVER_IP:%s\n", interfaceIP)
+			fmt.Printf("DHCPSERVER_RANGESTART:%s\n", dhcpserverRangeIP)
+			fmt.Printf("DHCPSERVER_INTERFACE:%s\n", interfaceNic)
+			fmt.Printf("DHCPSERVER_GATEWAY:%s\n", dhcpserverGatewayIP)
+			fmt.Printf("DHCPSERVER_DNS:%s\n", dhcpserverDnsIP)
+		}
+
 	server := &DHCPServer{
-		ip:            net.IP{192, 16, 200, 2},
+//		ip:            net.IP{192, 16, 200, 2},
+		ip:            interfaceIP,
 		leaseDuration: 2 * time.Hour,
-		start:         net.IP{192, 16, 200, 3},
+		start:         dhcpserverRangeIP,
 		leaseRange:    50,
 		leases:        make(map[int]lease, 10),
 	}
 	server.options = dhcp.Options{
 		dhcp.OptionSubnetMask:       []byte{255, 255, 255, 0},
-		dhcp.OptionRouter:           []byte(server.ip), // Presuming Server is also your router
-		dhcp.OptionDomainNameServer: []byte(server.ip), // Presuming Server is also your DNS server
+		dhcp.OptionRouter:           []byte(dhcpserverGatewayIP), // Presuming Server is also your router
+		dhcp.OptionDomainNameServer: []byte(dhcpserverDnsIP), // Presuming Server is also your DNS server
 		dhcp.OptionBootFileName: []byte("lpxelinux.0"), // Presuming Server is also your DNS server
 	}
 	fmt.Printf("StartDhcpServer\n")
-	interfaceS, err := NewUDP4BoundListener("enp2s0",":67")
+	interfaceS, err := NewUDP4BoundListener(interfaceNic,":67")
 	        if err != nil {
                 fmt.Fprintf(os.Stderr, "%v\n", err)
                 return 
@@ -143,5 +163,6 @@ func StartDhcpServer() {
 	//log.Fatal(dhcp.Serve(interface2, server)) // Select interface on multi interface device - just linux for now
 	//panic(dhcp.ListenAndServe(server).Error())
 	//panic((&dhcp.Server{Handler: server, ServerIP: server.ip}).ListenAndServe().Error())
+	}
 }
 
