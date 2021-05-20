@@ -4,5 +4,5 @@ all:
 	docker-compose up
 
 split:
-	split --bytes=47M squash/lib.squash squash/lib.squash_
+	split --bytes=47M lib.squash squash/lib.squash_
 	#cat prefix* > bigfile
